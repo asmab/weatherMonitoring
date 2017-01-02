@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+	
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	
+<script src = "js/angular.min.js"></script>
+<script src = "js/angular-route.min.js"></script>
+<script src="app/app.js"></script>   
+	
+	
+	
+	
+<style type="text/css">
+/* required style*/ 
+.none{display: none;}
+
+/* optional styles */
+table tr th, table tr td{font-size: 1.2rem;}
+.row{ margin:20px 20px 20px 20px;width: 100%;}
+.glyphicon{font-size: 20px;}
+.glyphicon-plus{float: right;}
+a.glyphicon{text-decoration: none;cursor: pointer;}
+.glyphicon-trash{margin-left: 10px;}
+.alert{
+    width: 50%;
+    border-radius: 0;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+</style>
+	
+</head>
+
+	<body>
+		<div class="container" ng-controller="listCtrl">
+	
+	   <div class="row" >
+    	<h2>Dashboard  </h2>
+	
+    <div class="col-sm-6" ng-show="cities.length > 0">
+		<h2> Weather monitoring</h2><hr>
+        <div class="panel panel-default users-content">
+            <div class="panel-heading">Brazil - Cities <a href="javascript:void(0);" class="glyphicon glyphicon-plus" onClick="$('.formData').slideToggle();"></a></div>
+            
+            <div class="panel-body none formData">
+                <form class="form" name="cityForm">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" class="form-control" name="name" ng-model="city.name"/>
+                    </div>
+                    <div class="form-group">
+                        <label>CEP</label>
+                        <input type="text" class="form-control" name="cep" ng-model="city.cep"/>
+                    </div>
+                
+                    <a href="javascript:void(0);" class="btn btn-warning" onClick="$('.formData').slideUp();">Cancel</a>
+                  <a href="javascript:void(0);" class="btn btn-success" ng-hide="" ng-click="saveCity(city)">Add City</a>
+              
+                </form>
+            </div>
+            <table class="table table-striped">
+			   <thead>	
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="10%">Name</th>
+                    <th width="10%">CEP</th>
+                    <th width="20%">Created</th>
+                    <th width="20%"></th>
+                </tr>
+				</thead>
+				<tbody ng-init="getCities()">
+                <tr ng-repeat="c in cities">
+                    <td><input type="hidden" name="id" value=""></td>
+                    <td>{{c.name}}</td>
+                    <td>{{c.cep}}</td>
+                    <td>{{c.created}}</td>
+                    <td>
+                        <a href="javascript:void(0);" class="glyphicon glyphicon-dashboard" ng-click="showForecast(c.name)"></a>
+                        <a href="javascript:void(0);" class="glyphicon glyphicon-trash" ng-click="deleteCity(c)"></a>
+                    </td>
+                </tr>
+			    </tbody>
+           </table>
+         </div>
+     </div>
+		
+		      <form class="form" name="weatherForm">
+		   
+		   <div class="col-sm-6">
+			<a href="" class="btn btn-success" ng-hide="" ng-click="getWeatherAllCities()">Save weather</a>
+		  <h2>Temperature variation</h2>
+			<hr>
+          <div class="col-sm-6">
+			 
+			  <table>
+			  <tr> 
+				  <td><b>City       </b></td>
+				  <td>{{x.results.city}}</td>
+			  </tr>
+			  <tr>
+				  <td><b>Temperature </b> </td>
+				  <td>{{x.results.temp}} </td>
+			  </tr>
+			   <tr> 
+				  <td><b>Date        </b> </td>
+				  <td>{{x.results.date}} </td>
+			  </tr>
+			  <tr>
+				  <td><b>Time        </b> </td>
+				  <td>{{x.results.time}}</td>
+			  </tr>
+			  </table> 
+	
+		</div>
+		 <div class="col-sm-6">
+			<img src="imagens/{{x.results.img_id}}.png" class="imagem-do-tempo">
+		</div>	
+		
+			 <table class="table table-striped">
+			   <thead>	
+                <tr>
+                    <th width="10%">Date</th>
+                    <th width="5%">Maximum °</th>
+			        <th width="5%">Minimum °</th>
+                </tr>
+				</thead>
+				 <tbody>
+                <tr ng-repeat="y in x.results.forecast">
+                    <td>{{y.date}} , {{y.weekday}} </td>
+                    <td>{{y.max}} </td>
+					<td>{{y.min}} </td>
+                </tr>
+				</tbody>
+            </table>
+			
+    </div>
+		  
+	 </form> 
+		   
+   </div>
+			
+
+			
+  </div>
+</body>
+</html>
