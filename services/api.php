@@ -126,7 +126,7 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
         
 			
 			$weather = json_decode(file_get_contents("php://input"),true);
-			$column_names = array('id', 'temp_act', 'temp_min', 'temp_max', 'date', 'city');
+			$column_names = array('temp_act', 'temp_min', 'temp_max','city');
 			$keys = array_keys($weather);
 			$columns = '';
 			$values = '';

@@ -63,8 +63,6 @@ app.controller('listCtrl', function ($scope, services,$location,$http) {
 		 
             services.insertWeather(weather);
 		  
-		    console.log(weather);
-		    console.log("city_name "+weather.city);
 		    
       
     };
@@ -73,23 +71,28 @@ app.controller('listCtrl', function ($scope, services,$location,$http) {
   $scope.showForecast=function(name){ 
    $http.get('https://api.hgbrasil.com/weather/?format=json&city_name='+name+'&key=31d8c6a1').
         then(function(response) {
-             $scope.x = response.data;
-  
+             $scope.x = response.data;  
 	   
-	$scope.city=$scope.x.results.city;
+	$scope.city_name=$scope.x.results.city_name;
 	$scope.temp_act=$scope.x.results.temp;
-	   
-	 for(var i=0;i<$scope.x.results.forecast.length;i++) {  
+	
 	   
 	$scope.temp_min=$scope.x.results.forecast[0].min;
-	$scope.temp_max=$scope.x.results.forecast[0].max;
+	$scope.temp_max=$scope.x.results.forecast[0].max;		 
+	
 		 
-		console.log("city "+$scope.city+ " temp actuelle : "+$scope.temp_act+" temp min : "+$scope.temp_min +" temp max :"+$scope.temp_max);
+		 $scope.weather = {temp_act: '', temp_min: '', temp_max: '', city: ''};
+		 $scope.weather.temp_act=$scope.temp_act;
+		 $scope.weather.temp_min=$scope.temp_min;
+		 $scope.weather.temp_max=$scope.temp_max;
+		 $scope.weather.city=$scope.city_name;	
 		 
+		 console.log($scope.weather);
 		 
-		   $scope.saveWeather($scope.x.results);
+		   $scope.saveWeather($scope.weather);
 		 
-	 }
+		$scope.weather = {temp_act: '', temp_min: '', temp_max: '', city: ''};  
+	   
         });
 
 }
@@ -108,7 +111,6 @@ app.controller('listCtrl', function ($scope, services,$location,$http) {
    
 	//select weather for each city from api (by name)	
 		
-		//var city=cities[i].name;
 		$scope.showForecast(cities[i].name);		
 	
     }
