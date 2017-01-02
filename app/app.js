@@ -27,18 +27,31 @@ app.factory("services", ['$http', function($http) {
     return $http.post(serviceBase + 'insertWeather', weather).then(function (results) {
         return results;
     });
-	};
+	}
 
-
+     obj.getWeather = function(city){
+        return $http.get(serviceBase + 'getWeather?city=' + city);
+    }
 	
+	  obj.max_temperature = function(){
+        return $http.get(serviceBase + 'max_temperature');
+    }
+	 
+	 
     return obj;   
 }]);
 
 app.controller('listCtrl', function ($scope, services,$location,$http,$interval) {
+	
     services.getCities().then(function(data){
         $scope.cities = data.data;
     });
 	
+	 services.max_temperature().then(function(data){
+        $scope.topcities = data.data;
+    });
+	
+									
      $scope.saveCity = function(city) {
         $location.path('/');
      
@@ -97,6 +110,24 @@ app.controller('listCtrl', function ($scope, services,$location,$http,$interval)
 
 }
 
+    $scope.showWeather=function(name){ 
+   $http.get('https://api.hgbrasil.com/weather/?format=json&city_name='+name+'&key=31d8c6a1').
+        then(function(response) {
+             $scope.x = response.data;  
+	   
+	$scope.city_name=$scope.x.results.city_name;
+	$scope.temp_act=$scope.x.results.temp;	
+	   
+	$scope.temp_min=$scope.x.results.forecast[0].min;
+	$scope.temp_max=$scope.x.results.forecast[0].max;		 
+	
+		 services.getWeather($scope.city_name).then(function(data){
+        $scope.weathers = data.data;
+    });
+	 
+        });
+
+}
 
 
   $scope.getWeatherAllCities = function() {
@@ -121,9 +152,6 @@ app.controller('listCtrl', function ($scope, services,$location,$http,$interval)
 	//$interval($scope.getWeatherAllCities(), 1000);
 
 
-
-
-	
 });
 
 
@@ -132,7 +160,7 @@ app.config(['$routeProvider',
     $routeProvider.
       when('/', {
         title: 'Cities',
-        templateUrl: 'partials/cities.html',
+        templateUrl: 'index.html',
         controller: 'listCtrl'
       })
 	    .when('/:name', {
@@ -146,14 +174,14 @@ app.config(['$routeProvider',
           }
         }
       })
-	    .when('/', {
+	 .when('/:city', {
         title: 'Cities',
-        templateUrl: 'partials/cities.html',
+        templateUrl: 'index.html',
         controller: 'listCtrl',
         resolve: {
           customer: function(services, $route){
-            var name = $route.current.params.weather;
-            return services.saveWeather(weather);
+            var name= $route.current.params.name;
+            return services.getWeather(name);
           }
         }
       })

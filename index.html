@@ -81,15 +81,18 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
                     <td>{{c.cep}}</td>
                     <td>{{c.created}}</td>
                     <td>
-                        <a href="javascript:void(0);" class="glyphicon glyphicon-dashboard" ng-click="showForecast(c.name)"></a>
+                        <a href="javascript:void(0);" class="glyphicon glyphicon-dashboard" ng-click="showWeather(c.name)"></a>
+						
                         <a href="javascript:void(0);" class="glyphicon glyphicon-trash" ng-click="deleteCity(c)"></a>
                     </td>
                 </tr>
 			    </tbody>
            </table>
-         </div>
+         </div>				
+
      </div>
-		
+	
+		   
 		      <form class="form" name="weatherForm">
 		   
 		   <div class="col-sm-6">
@@ -101,7 +104,7 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
 			  <table>
 			  <tr> 
 				  <td><b>City       </b></td>
-				  <td>{{x.results.city}}</td>
+				  <td>{{x.results.city_name}}</td>
 			  </tr>
 			  <tr>
 				  <td><b>Temperature </b> </td>
@@ -122,30 +125,56 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
 			<img src="imagens/{{x.results.img_id}}.png" class="imagem-do-tempo">
 		</div>	
 		
-			 <table class="table table-striped">
+			    <table class="table table-striped">
 			   <thead>	
                 <tr>
                     <th width="10%">Date</th>
+					<th width="10%">Temp Act</th>
                     <th width="5%">Maximum °</th>
 			        <th width="5%">Minimum °</th>
                 </tr>
 				</thead>
 				 <tbody>
-                <tr ng-repeat="y in x.results.forecast">
-                    <td>{{y.date}} , {{y.weekday}} </td>
-                    <td>{{y.max}} </td>
-					<td>{{y.min}} </td>
+                <tr ng-repeat="x in weathers">
+                    <td>{{x.date}}</td>
+					<td>{{x.temp_act}} </td>
+                    <td>{{x.temp_min}} </td>
+					<td>{{x.temp_max}} </td>
                 </tr>
 				</tbody>
             </table>
+			   
 			
     </div>
 		  
-	 </form> 
+	 </form> 	   
 		   
+	
    </div>
 			
 
+				<div class="col-sm-6" >   	
+		<h2> TOP Cities</h2>   
+		     <table class="table table-striped">
+			   <thead>	
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="10%">City</th>
+                    <th width="10%">Temperature</th>
+             
+                </tr>
+				</thead>
+				<tbody ng-init="max_temperature()">
+                <tr ng-repeat="c in topcities">
+                    <td><input type="hidden" name="id" value=""></td>
+                    <td>{{c.city}}</td>
+                    <td>{{c.temp_act}}</td>
+                    
+                </tr>
+			    </tbody>
+           </table>
+		   
+		   </div>
 			
   </div>
 </body>

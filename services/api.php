@@ -53,10 +53,11 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
 				while($row = $r->fetch_assoc()){
 					$result[] = $row;
 				}
-				$this->response($this->json($result), 200); // send user details
+				$this->response($this->json($result), 200); 
 			}
 			$this->response('',204);	// If no records "No Content" status
 		}
+		
 		private function city(){	
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -154,7 +155,46 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
 				$this->response('',204);	//"No Content" status
 		}
 		
+		//**************** weather ************
 		
+			private function getWeather(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+				
+			$city = $this->_request['city'];
+			$query="SELECT * FROM weather where city='".$city."' ";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // 
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		//*************** TOP CITIES ***********************
+			
+			private function max_temperature(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+	        
+			$query="SELECT * FROM weather ORDER BY temp_act DESC LIMIT 3;";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); 
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
 		
 		
 		/*
