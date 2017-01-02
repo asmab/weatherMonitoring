@@ -34,7 +34,7 @@ app.factory("services", ['$http', function($http) {
     return obj;   
 }]);
 
-app.controller('listCtrl', function ($scope, services,$location,$http) {
+app.controller('listCtrl', function ($scope, services,$location,$http,$interval) {
     services.getCities().then(function(data){
         $scope.cities = data.data;
     });
@@ -117,6 +117,8 @@ app.controller('listCtrl', function ($scope, services,$location,$http) {
     });	
 		
      };
+	
+	//$interval($scope.getWeatherAllCities(), 1000);
 
 
 
