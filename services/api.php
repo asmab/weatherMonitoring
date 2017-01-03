@@ -164,7 +164,7 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
 			}
 				
 			$city = $this->_request['city'];
-			$query="SELECT * FROM weather where city='".$city."' ";
+			$query="SELECT * FROM weather where city='".$city."' LIMIT 30 ";
 			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 
 			if($r->num_rows > 0){
