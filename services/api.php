@@ -1,7 +1,7 @@
 <?php
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PATCH");
 header("Content-Type: application/json,text/plain, */* ; charset=UTF-8"); 
 
  	require_once("Rest.inc.php");
@@ -99,6 +99,7 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "city Created Successfully.", "data" => $city);
 				$this->response($this->json($success),200);
+				
 			}else
 				$this->response('',204);	//"No Content" status
 		}
@@ -183,7 +184,7 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
 				$this->response('',406);
 			}
 	        
-			$query="SELECT * FROM weather ORDER BY temp_act DESC LIMIT 3;";
+			$query="SELECT DISTINCT temp_act,city FROM weather ORDER BY temp_act DESC LIMIT 3;";
 			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 
 			if($r->num_rows > 0){
@@ -196,6 +197,26 @@ header("Content-Type: application/json,text/plain, */* ; charset=UTF-8");
 			$this->response('',204);	// If no records "No Content" status
 		}
 		
+		//**********PATCH clear history******************
+		
+		
+			private function clearHistory(){
+		
+			if($this->get_request_method() != "PATCH"){
+				$this->response('',406);
+			}
+	        
+		    $name =$this->_request['name'];
+			$success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+			$error = array('status' => "Error", "msg" => "Unkown error while cleaing history.");
+			
+		
+				$query="DELETE FROM weather WHERE city = '".$name."';";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				
+				$this->response($this->json($success),200);
+				
+		}
 		
 		/*
 		 *	Encode array into JSON

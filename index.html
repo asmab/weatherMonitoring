@@ -45,26 +45,59 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
 	
     <div class="col-sm-6" ng-show="cities.length > 0">
 		<h2> Weather monitoring</h2><hr>
+		
+		  	
+		<h2> TOP Cities</h2>   
+		     <table class="table table-striped">
+			   <thead>	
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="10%">City</th>
+                    <th width="10%">Temperature</th>
+             
+                </tr>
+				</thead>
+				<tbody ng-init="max_temperature()">
+                <tr ng-repeat="c in topcities">
+                    <td><input type="hidden" name="id" value=""></td>
+                    <td>{{c.city}}</td>
+                    <td>{{c.temp_act}}</td>
+                    
+                </tr>
+			    </tbody>
+           </table>
+		
+		<h3> Cities </h3>
         <div class="panel panel-default users-content">
             <div class="panel-heading">Brazil - Cities <a href="javascript:void(0);" class="glyphicon glyphicon-plus" onClick="$('.formData').slideToggle();"></a></div>
-            
+ 
             <div class="panel-body none formData">
-                <form class="form" name="cityForm">
+				<div class="col-sm-6" >
+                <form class="form" name="cityForm" >
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text" class="form-control" name="name" ng-model="city.name"/>
                     </div>
+					 <a href="javascript:void(0);" class="btn btn-success" ng-hide="" ng-click="saveCity(city)">Add City by NAME</a>
+                   
+                </form>
+			     </div>
+				<div class="col-sm-6" >
+					<form class="form" name="cityForm">
+                  
                     <div class="form-group">
                         <label>CEP</label>
-                        <input type="text" class="form-control" name="cep" ng-model="city.cep"/>
+                        <input type="text" class="form-control" name="cep" ng-model="cep_city"/>
                     </div>
-                
-                    <a href="javascript:void(0);" class="btn btn-warning" onClick="$('.formData').slideUp();">Cancel</a>
-                  <a href="javascript:void(0);" class="btn btn-success" ng-hide="" ng-click="saveCity(city)">Add City</a>
+                 
+						
+                  <a href="javascript:void(0);" class="btn btn-success" ng-hide="" ng-click="insertCityByCep(cep_city)">Add City by CEP</a>
               
                 </form>
+				</div>				
+				
             </div>
-            <table class="table table-striped">
+            <table id= "myTable" class="table table-striped">
 			   <thead>	
                 <tr>
                     <th width="5%">#</th>
@@ -74,7 +107,7 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
                     <th width="20%"></th>
                 </tr>
 				</thead>
-				<tbody ng-init="getCities()">
+				<tbody >
                 <tr ng-repeat="c in cities">
                     <td><input type="hidden" name="id" value=""></td>
                     <td>{{c.name}}</td>
@@ -84,6 +117,8 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
                         <a href="javascript:void(0);" class="glyphicon glyphicon-dashboard" ng-click="showWeather(c.name)"></a>
 						
                         <a href="javascript:void(0);" class="glyphicon glyphicon-trash" ng-click="deleteCity(c)"></a>
+						
+						
                     </td>
                 </tr>
 			    </tbody>
@@ -96,7 +131,8 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
 		      <form class="form" name="weatherForm">
 		   
 		   <div class="col-sm-6">
-			<a href="" class="btn btn-success" ng-hide="" ng-click="getWeatherAllCities()">Save weather</a>
+			
+			 
 		  <h2>Temperature variation</h2>
 			<hr>
           <div class="col-sm-6">
@@ -124,6 +160,7 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
 		 <div class="col-sm-6">
 			<img src="imagens/{{x.results.img_id}}.png" class="imagem-do-tempo">
 		</div>	
+		         <a href="" class="btn btn-success" ng-hide="" ng-click="clearHistory(x.results.city_name)">Clear temperature history</a>
 		
 			    <table class="table table-striped">
 			   <thead>	
@@ -136,6 +173,7 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
 				</thead>
 				 <tbody>
                 <tr ng-repeat="x in weathers">
+					
                     <td>{{x.date}}</td>
 					<td>{{x.temp_act}} </td>
                     <td>{{x.temp_min}} </td>
@@ -153,29 +191,9 @@ a.glyphicon{text-decoration: none;cursor: pointer;}
    </div>
 			
 
-				<div class="col-sm-6" >   	
-		<h2> TOP Cities</h2>   
-		     <table class="table table-striped">
-			   <thead>	
-                <tr>
-                    <th width="5%">#</th>
-                    <th width="10%">City</th>
-                    <th width="10%">Temperature</th>
-             
-                </tr>
-				</thead>
-				<tbody ng-init="max_temperature()">
-                <tr ng-repeat="c in topcities">
-                    <td><input type="hidden" name="id" value=""></td>
-                    <td>{{c.city}}</td>
-                    <td>{{c.temp_act}}</td>
-                    
-                </tr>
-			    </tbody>
-           </table>
-		   
-		   </div>
+					
 			
   </div>
+
 </body>
 </html>

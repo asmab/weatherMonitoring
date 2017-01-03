@@ -23,6 +23,14 @@ app.factory("services", ['$http', function($http) {
 	
 	};
 	
+	obj.clearHistory = function (name) {
+	    return $http.patch(serviceBase + 'clearHistory?name=' + name).then(function (status) {
+	        return status.data;
+			
+	    });
+	
+	};
+	
 	  obj.insertWeather = function (weather) {
     return $http.post(serviceBase + 'insertWeather', weather).then(function (results) {
         return results;
@@ -41,7 +49,7 @@ app.factory("services", ['$http', function($http) {
     return obj;   
 }]);
 
-app.controller('listCtrl', function ($scope, services,$location,$http,$interval) {
+app.controller('listCtrl', function ($scope, services,$location,$http,$interval,$route) {
 	
     services.getCities().then(function(data){
         $scope.cities = data.data;
@@ -51,13 +59,23 @@ app.controller('listCtrl', function ($scope, services,$location,$http,$interval)
         $scope.topcities = data.data;
     });
 	
+	   $scope.showCities = function() {
+        $location.path('/');
+     		
+        services.getCities().then(function(data){
+        $scope.cities = data.data;
+    });   
+        
+    };
 									
      $scope.saveCity = function(city) {
         $location.path('/');
-     
-            services.insertCity(city);
-       
-      
+     		
+          services.insertCity(city);
+		  $('.formData').slideUp(); 
+		 
+		 $scope.showCities();
+        
     };
 	
 	  $scope.deleteCity = function(city) {
@@ -72,11 +90,17 @@ app.controller('listCtrl', function ($scope, services,$location,$http,$interval)
 	  $scope.saveWeather = function(weather) {
         $location.path('/');
      
-		    console.log(" fct ctrl : weather/city  to insert : "+weather.city);
-		 
-            services.insertWeather(weather);
-		  
-		    
+		    console.log(" fct ctrl : weather/city  to insert : "+weather.city);		 
+            services.insertWeather(weather);	  
+		
+    };
+	
+	  $scope.clearHistory = function(name_city) {
+        $location.path('/');
+     
+            services.clearHistory(name_city);		  	
+		    console.log("clear history of city : "+name_city);
+       
       
     };
 	
@@ -149,8 +173,41 @@ app.controller('listCtrl', function ($scope, services,$location,$http,$interval)
 		
      };
 	
-	//$interval($scope.getWeatherAllCities(), 1000);
+	//************* save weather for each city every hour*********
+	
+	$interval($scope.getWeatherAllCities(), 3600000);
+	
+	//*********************************************************
+	
+ $scope.insertCityByCep=function(cep_city){ 
+    $http.get('https://viacep.com.br/ws/'+cep_city+'/json/').
+        then(function(response) {
+             $scope.cep_data = response.data; 
+	   
+	       
+	       console.log(" cityyy by cep  "+$scope.cep_data.localidade);
+	   
+	   //create object city and insert
+	   $scope.city = {name: '', cep: '', created:''}; 
+	   $scope.city.name=$scope.cep_data.localidade;
+	   $scope.city.cep=cep_city;
+	   //$scope.created=date.now();
+	  							
+	   console.log(" city to insert  "+$scope.city.name);
+	   
+       $scope.saveCity($scope.city);
+	   $scope.city = {name: '', cep: '',created:''};
+		services.getCities().then(function(data){
+        $scope.cities = data.data;
+    });
+		
+	   $('.formData').slideUp();      
 
+	
+        });
+
+}
+	
 
 });
 
@@ -168,7 +225,7 @@ app.config(['$routeProvider',
         templateUrl: 'partials/cities.html',
         controller: 'listCtrl',
         resolve: {
-          customer: function(services, $route){
+          city: function(services, $route){
             var name = $route.current.params.name;
             return services.deleteCity(name);
           }
@@ -179,9 +236,20 @@ app.config(['$routeProvider',
         templateUrl: 'index.html',
         controller: 'listCtrl',
         resolve: {
-          customer: function(services, $route){
+          city: function(services, $route){
             var name= $route.current.params.name;
             return services.getWeather(name);
+          }
+        }
+      })
+	   .when('/:name', {
+        title: 'Cities',
+        templateUrl: 'index.html',
+        controller: 'listCtrl',
+        resolve: {
+          city: function(services, $route){
+            var name = $route.current.params.name;
+            return services.clearHistory(name);
           }
         }
       })
@@ -194,3 +262,4 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
         $rootScope.title = current.$$route.title;
     });
 }]);
+
